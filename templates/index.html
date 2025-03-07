@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acute Kidney Injury Prediction</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            color: #007bff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Slider Styles */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .slider-container label {
+            font-weight: bold;
+            flex: 2;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .slider-container input[type=range] {
+            flex: 4;
+            margin: 0 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .slider-container input[type=range]:hover {
+            opacity: 1;
+        }
+
+        .slider-container input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-container input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .value-display {
+            flex: 1;
+            text-align: right;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #007bff;
+            min-width: 50px;
+        }
+
+        /* Button Styles */
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Result Styles */
+        .result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .positive {
+            color: white;
+            background-color: #dc3545;
+        }
+
+        .negative {
+            color: white;
+            background-color: #28a745;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .slider-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .slider-container input[type=range] {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .value-display {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Acute Kidney Injury Prediction</h1>
+        <form id="akiForm" action="/predict" method="post">
+            <div class="section-title">Kidney Function Markers</div>
+            <div class="slider-container">
+                <label for="creatinine_max">Creatinine Max:</label>
+                <input type="range" id="creatinine_max" name="creatinine_max" min="0.1" max="138.0" step="0.1" value="69">
+                <div class="value-display" id="creatinine_max_value">69</div>
+            </div>
+            <div class="slider-container">
+                <label for="creat">Serum Creatinine:</label>
+                <input type="range" id="creat" name="creat" min="0.0" max="138.0" step="0.1" value="69">
+                <div class="value-display" id="creat_value">69</div>
+            </div>
+            <div class="slider-container">
+                <label for="creatinine_min">Creatinine Min:</label>
+                <input type="range" id="creatinine_min" name="creatinine_min" min="0.05" max="19.1" step="0.1" value="9.5">
+                <div class="value-display" id="creatinine_min_value">9.5</div>
+            </div>
+            <div class="slider-container">
+                <label for="staytime">Hospital Stay Duration:</label>
+                <input type="range" id="staytime" name="staytime" min="0" max="7071.85" step="1" value="100">
+                <div class="value-display" id="staytime_value">100</div>
+            </div>
+            <div class="slider-container">
+                <label for="egfr">Estimated GFR:</label>
+                <input type="range" id="egfr" name="egfr" min="0.217" max="100.0" step="0.1" value="30">
+                <div class="value-display" id="egfr_value">30</div>
+            </div>
+            <div class="slider-container">
+                <label for="hemoglobin_min">Hemoglobin Min:</label>
+                <input type="range" id="hemoglobin_min" name="hemoglobin_min" min="1.2" max="22.2" step="0.1" value="12">
+                <div class="value-display" id="hemoglobin_min_value">12</div>
+            </div>
+            <div class="slider-container">
+                <label for="potassium_max">Potassium Max:</label>
+                <input type="range" id="potassium_max" name="potassium_max" min="1.2" max="22.2" step="0.1" value="11">
+                <div class="value-display" id="potassium_max_value">11</div>
+            </div>
+            <div class="slider-container">
+                <label for="count_times_go_icu">ICU Transfers:</label>
+                <input type="range" id="count_times_go_icu" name="count_times_go_icu" min="1" max="7" step="1" value="3">
+                <div class="value-display" id="count_times_go_icu_value">3</div>
+            </div>
+            <div class="slider-container">
+                <label for="sysbp_min">Systolic BP Min:</label>
+                <input type="range" id="sysbp_min" name="sysbp_min" min="0.15" max="181.0" step="1" value="90">
+                <div class="value-display" id="sysbp_min_value">90</div>
+            </div>
+            <div class="slider-container">
+                <label for="aniongap_min">Anion Gap Min:</label>
+                <input type="range" id="aniongap_min" name="aniongap_min" min="1.0" max="45.0" step="0.1" value="23">
+                <div class="value-display" id="aniongap_min_value">23</div>
+            </div>
+            <button type="submit">Predict AKI</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+    // Update slider values dynamically
+    document.querySelectorAll('input[type=range]').forEach(slider => {
+        slider.addEventListener('input', () => {
+            document.getElementById(`${slider.id}_value`).textContent = slider.value;
+        });
+    });
+
+    // Form submission handling
+    document.getElementById('akiForm').addEventListener('submit', function (e) {
+        e.preventDefault();  // Prevent default form submission
+
+        const formData = new FormData(this);
+        const resultDiv = document.getElementById('result');
+
+        resultDiv.textContent = "Calculating...";
+        resultDiv.className = "result";
+
+        fetch('/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.prediction === 1) {
+                resultDiv.textContent = `AKI Prediction: Positive (Probability: ${data.probability}%)`;
+                resultDiv.className = "result positive";
+            } else {
+                resultDiv.textContent = `AKI Prediction: Negative (Probability: ${data.probability}%)`;
+                resultDiv.className = "result negative";
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            resultDiv.textContent = "Prediction failed. Try again.";
+        });
+    });
+</script>
+</body>
+</html>
