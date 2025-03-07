@@ -2,6 +2,7 @@
 
 This project focuses on predicting Acute Kidney Injury (AKI) during the first 7 days of a patient's ICU stay using machine learning. The model is developed using a Gradient Boosting Classifier and deployed via a user-friendly interface. Below is an overview of the project, including details about the dataset, model development, and deployment.
 
+- **Application**: [Live Demo](https://acute-kidney-injury-prediction-app.onrender.com/)
 ---
 
 ## Dataset
@@ -46,7 +47,7 @@ These features are used as inputs in the UI, while the remaining features are im
 
 The model is dockerized and deployed on **Render**, a cloud application platform that simplifies building and deploying applications.
 
-- **Application**: [Live Demo](https://acute-kidney-injury-prediction-app.onrender.com/)
+
 
 ---
 
