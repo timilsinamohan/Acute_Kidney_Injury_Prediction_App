@@ -46,7 +46,7 @@ These features are used as inputs in the UI, while the remaining features are im
 
 The model is dockerized and deployed on **Render**, a cloud application platform that simplifies building and deploying applications.
 
-- **Render**: [Render Website](https://render.com/)
+- **Application**: [Render Website](https://acute-kidney-injury-prediction-app.onrender.com/)
 
 ---
 
